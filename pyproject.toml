@@ -1,0 +1,12 @@
+[project]
+name = "ecommerce-sentiment-analyzer"
+version = "0.1.0"
+description = "Review sentiment analysis (BiLSTM vs DistilBERT) with automatic CS flagging and a Gradio UI."
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100

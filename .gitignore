@@ -1,0 +1,44 @@
+# ---------- Data (never committed) ----------
+data/*
+!data/.gitkeep
+
+# ---------- Model artifacts ----------
+# BiLSTM checkpoint (~10 MB) is committed. DistilBERT weights (~270 MB) exceed
+# GitHub's 100 MB file limit and are distributed separately (see README).
+models/distilbert/*.safetensors
+models/distilbert/*.bin
+models/distilbert/checkpoint-*/
+models/*_trainer_output/
+
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# ---------- Environments ----------
+.venv/
+venv/
+env/
+.env
+
+# ---------- Jupyter ----------
+.ipynb_checkpoints/
+
+# ---------- Tooling / caches ----------
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.cache/
+.gradio/
+flagged/
+runs/
+wandb/
+
+# ---------- IDE / OS ----------
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
