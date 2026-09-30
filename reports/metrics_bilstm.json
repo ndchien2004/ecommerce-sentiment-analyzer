@@ -1,0 +1,8 @@
+{
+  "model": "BiLSTM",
+  "accuracy": 0.866,
+  "precision": 0.8665865384615384,
+  "recall": 0.866,
+  "f1": 0.8659463785514205,
+  "test_samples": 2000
+}

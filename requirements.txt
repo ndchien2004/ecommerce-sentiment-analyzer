@@ -17,4 +17,5 @@ tqdm
 # Development / notebooks
 pytest
 ipykernel
+ipywidgets
 nbconvert
