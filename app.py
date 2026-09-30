@@ -11,7 +11,7 @@ import html
 import gradio as gr
 
 from src import config
-from src.inference import AVAILABLE_MODELS, analyze_review
+from src.inference import AVAILABLE_MODELS, analyze_review, ensure_distilbert_weights
 
 EXAMPLES = [
     ["The product arrived completely broken and smells dangerous, I want a refund now!", "DistilBERT"],
@@ -83,4 +83,8 @@ if __name__ == "__main__":
     parser.add_argument("--share", action="store_true", help="Create a public Gradio link.")
     parser.add_argument("--port", type=int, default=7860)
     args = parser.parse_args()
+    try:
+        ensure_distilbert_weights()  # first run only: fetch weights from the GitHub Release
+    except FileNotFoundError as exc:
+        print(f"Warning: {exc}\nDistilBERT is unavailable; BiLSTM still works.")
     build_demo().launch(server_port=args.port, share=args.share)

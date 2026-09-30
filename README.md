@@ -65,7 +65,7 @@ ecommerce-sentiment-analyzer/
 ├── data/                       # Local datasets (git-ignored, rebuilt by notebook 01)
 ├── models/
 │   ├── bilstm_best.pt          # BiLSTM checkpoint (weights + vocab + hyperparameters)
-│   └── distilbert/             # Fine-tuned DistilBERT config + tokenizer (+ weights, see below)
+│   └── distilbert/             # Fine-tuned DistilBERT config + tokenizer (weights: see Model weights)
 ├── notebooks/
 │   ├── 01_eda_and_baseline_bilstm.ipynb   # Phases 1-2: EDA, data prep, BiLSTM training
 │   └── 02_finetune_distilbert.ipynb       # Phases 3-5: DistilBERT, benchmark, CS-flag check
@@ -99,10 +99,16 @@ pip install -r requirements.txt
 ### Model weights
 
 - **BiLSTM:** `models/bilstm_best.pt` (13 MB) is included in the repository.
-- **DistilBERT:** the weights file (`model.safetensors`, ~255 MB) is larger than GitHub's 100 MB file limit and
-  is not committed. To create it, run `notebooks/02_finetune_distilbert.ipynb`. It takes about 5 minutes of
-  training on an RTX 3050 laptop GPU and also works on a Kaggle GPU. Until the weights exist, the app still
-  works with the BiLSTM model.
+- **DistilBERT:** the weights (`model.safetensors`, ~255 MB) exceed GitHub's 100 MB file limit, so they are
+  published as a release asset instead. **`python app.py` downloads them automatically on the first run**
+  (`distilbert.zip`, ~236 MB) and extracts them into `models/distilbert/`. You have two alternatives:
+  - Download [`distilbert.zip`](https://github.com/ndchien2004/ecommerce-sentiment-analyzer/releases/download/v1.0.0/distilbert.zip)
+    from the [v1.0.0 release](https://github.com/ndchien2004/ecommerce-sentiment-analyzer/releases/tag/v1.0.0)
+    and unzip it into `models/`.
+  - Retrain it with `notebooks/02_finetune_distilbert.ipynb`, which takes about 5 minutes on an RTX 3050
+    laptop GPU.
+
+  If the download fails, the app still starts and the BiLSTM model keeps working.
 
 ## Run the Application
 
@@ -118,7 +124,7 @@ python app.py --share    # optional temporary public link
 | Data prep + EDA + BiLSTM | `notebooks/01_eda_and_baseline_bilstm.ipynb` | `data/processed/*.csv`, `models/bilstm_best.pt` |
 | DistilBERT + benchmark | `notebooks/02_finetune_distilbert.ipynb` | `models/distilbert/`, `reports/` |
 | Re-run the benchmark only | `python -m src.evaluation` | `reports/benchmark.md` |
-| Unit tests | `pytest` | 23 tests |
+| Unit tests | `pytest` | 26 tests |
 
 Both notebooks run top to bottom, either locally or on Kaggle. When the repository is not found, the first
 cell clones it.

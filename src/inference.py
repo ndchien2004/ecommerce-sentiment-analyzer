@@ -87,6 +87,46 @@ class BiLSTMPredictor(SentimentPredictor):
         return torch.softmax(logits, dim=-1).cpu().numpy()
 
 
+def ensure_distilbert_weights(
+    model_dir: Path = config.DISTILBERT_DIR, url: str = config.DISTILBERT_WEIGHTS_URL
+) -> None:
+    """Download and unzip the fine-tuned DistilBERT from the GitHub Release if missing.
+
+    The archive contains a top-level ``distilbert/`` folder and is extracted
+    next to ``model_dir``.
+    """
+    model_dir = Path(model_dir)
+    if (model_dir / "model.safetensors").exists():
+        return
+
+    import tempfile
+    import urllib.request
+    import zipfile
+    from urllib.error import URLError
+
+    from tqdm import tqdm
+
+    print(f"Downloading DistilBERT weights from {url}")
+    try:
+        with tempfile.TemporaryDirectory() as tmp:
+            archive = Path(tmp) / "distilbert.zip"
+            with tqdm(unit="B", unit_scale=True, unit_divisor=1024) as bar:
+
+                def report(blocks: int, block_size: int, total: int) -> None:
+                    bar.total = total if total > 0 else None
+                    bar.update(blocks * block_size - bar.n)
+
+                urllib.request.urlretrieve(url, archive, reporthook=report)
+            with zipfile.ZipFile(archive) as zf:
+                zf.extractall(model_dir.parent)
+    except (URLError, OSError, zipfile.BadZipFile) as exc:
+        raise FileNotFoundError(
+            f"Could not download DistilBERT weights from {url} ({exc}). "
+            "Download distilbert.zip manually and unzip it into models/, "
+            "or fine-tune it with notebooks/02_finetune_distilbert.ipynb."
+        ) from exc
+
+
 class DistilBERTPredictor(SentimentPredictor):
     name = "DistilBERT"
 
@@ -98,6 +138,8 @@ class DistilBERTPredictor(SentimentPredictor):
         super().__init__(device)
         from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
+        if Path(model_dir) == config.DISTILBERT_DIR:
+            ensure_distilbert_weights(model_dir)
         if not (Path(model_dir) / "config.json").exists():
             raise FileNotFoundError(
                 f"DistilBERT model not found in {model_dir}. "

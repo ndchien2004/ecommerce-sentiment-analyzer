@@ -18,6 +18,13 @@ MODELS_DIR = ROOT_DIR / "models"
 BILSTM_CHECKPOINT_PATH = MODELS_DIR / "bilstm_best.pt"
 DISTILBERT_DIR = MODELS_DIR / "distilbert"
 
+# DistilBERT weights (~255 MB) exceed GitHub's file limit, so they are published
+# as a release asset and downloaded on first use.
+GITHUB_REPO = "ndchien2004/ecommerce-sentiment-analyzer"
+DISTILBERT_WEIGHTS_URL = (
+    f"https://github.com/{GITHUB_REPO}/releases/download/v1.0.0/distilbert.zip"
+)
+
 REPORTS_DIR = ROOT_DIR / "reports"
 FIGURES_DIR = REPORTS_DIR / "figures"
 
