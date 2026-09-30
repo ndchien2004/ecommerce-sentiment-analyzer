@@ -129,6 +129,17 @@ python app.py --share    # optional temporary public link
 Both notebooks run top to bottom, either locally or on Kaggle. When the repository is not found, the first
 cell clones it.
 
+### Training Simulator (learning aid)
+
+`scripts/training_simulator.py` runs two reviews through exactly one training step (1 epoch, 1 batch) and
+prints every intermediate tensor: tokens and padding, the shapes at each layer, logits, probabilities, the
+cross-entropy loss, the gradients and a hand-checked `w − lr × grad` weight update.
+
+```bash
+python scripts/training_simulator.py                     # tiny BiLSTM (same architecture, readable sizes)
+python scripts/training_simulator.py --model distilbert  # real distilbert-base-uncased, ~10 s on CPU
+```
+
 ## Benchmark
 
 Both models were evaluated on the same **held-out test set of 2,000 reviews** (1,000 Positive / 1,000
